@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Copiat în clipboard.",
+  "Couldn't load the speech model.": "Modelul de vorbire nu a putut fi încărcat.",
+  "Couldn't paste the text.": "Textul nu a putut fi lipit.",
+  "Couldn't start recording.": "Înregistrarea nu a putut porni.",
+  "No speech model yet. Run: asmir setup": "Încă nu există un model de vorbire. Rulează: asmir setup",
+  "Recording needs PipeWire.": "Înregistrarea necesită PipeWire.",
+  "Speech recognition failed.": "Recunoașterea vorbirii a eșuat."
+}

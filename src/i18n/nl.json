@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Gekopieerd naar het klembord.",
+  "Couldn't load the speech model.": "Het spraakmodel kon niet worden geladen.",
+  "Couldn't paste the text.": "De tekst kon niet worden geplakt.",
+  "Couldn't start recording.": "De opname kon niet starten.",
+  "No speech model yet. Run: asmir setup": "Nog geen spraakmodel. Voer uit: asmir setup",
+  "Recording needs PipeWire.": "Opnemen vereist PipeWire.",
+  "Speech recognition failed.": "Spraakherkenning is mislukt."
+}

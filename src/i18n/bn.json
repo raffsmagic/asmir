@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "ক্লিপবোর্ডে কপি করা হয়েছে।",
+  "Couldn't load the speech model.": "স্পিচ মডেল লোড করা যায়নি।",
+  "Couldn't paste the text.": "টেক্সট পেস্ট করা যায়নি।",
+  "Couldn't start recording.": "রেকর্ডিং শুরু করা যায়নি।",
+  "No speech model yet. Run: asmir setup": "এখনও কোনো স্পিচ মডেল নেই। চালান: asmir setup",
+  "Recording needs PipeWire.": "রেকর্ডিংয়ের জন্য PipeWire প্রয়োজন।",
+  "Speech recognition failed.": "স্পিচ শনাক্তকরণ ব্যর্থ হয়েছে।"
+}

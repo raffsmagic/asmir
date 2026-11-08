@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Cóipeáilte chuig an ghearrthaisce.",
+  "Couldn't load the speech model.": "Níorbh fhéidir an tsamhail cainte a lódáil.",
+  "Couldn't paste the text.": "Níorbh fhéidir an téacs a ghreamú.",
+  "Couldn't start recording.": "Níorbh fhéidir an taifeadadh a thosú.",
+  "No speech model yet. Run: asmir setup": "Níl samhail cainte ann fós. Rith: asmir setup",
+  "Recording needs PipeWire.": "Tá PipeWire ag teastáil le taifeadadh.",
+  "Speech recognition failed.": "Theip ar aithint cainte."
+}

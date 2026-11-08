@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Копирано у оставу.",
+  "Couldn't load the speech model.": "Говорни модел није могао да се учита.",
+  "Couldn't paste the text.": "Текст није могао да се налепи.",
+  "Couldn't start recording.": "Снимање није могло да почне.",
+  "No speech model yet. Run: asmir setup": "Још нема говорног модела. Покрените: asmir setup",
+  "Recording needs PipeWire.": "За снимање је потребан PipeWire.",
+  "Speech recognition failed.": "Препознавање говора није успело."
+}

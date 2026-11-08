@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Nukopijuota į iškarpinę.",
+  "Couldn't load the speech model.": "Nepavyko įkelti kalbos modelio.",
+  "Couldn't paste the text.": "Nepavyko įklijuoti teksto.",
+  "Couldn't start recording.": "Nepavyko pradėti įrašymo.",
+  "No speech model yet. Run: asmir setup": "Kalbos modelio dar nėra. Paleiskite: asmir setup",
+  "Recording needs PipeWire.": "Įrašymui reikia PipeWire.",
+  "Speech recognition failed.": "Kalbos atpažinimas nepavyko."
+}

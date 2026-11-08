@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Копирано в клипборда.",
+  "Couldn't load the speech model.": "Моделът за реч не можа да се зареди.",
+  "Couldn't paste the text.": "Текстът не можа да се постави.",
+  "Couldn't start recording.": "Записът не можа да започне.",
+  "No speech model yet. Run: asmir setup": "Все още няма модел за реч. Изпълнете: asmir setup",
+  "Recording needs PipeWire.": "Записът изисква PipeWire.",
+  "Speech recognition failed.": "Разпознаването на реч се провали."
+}

@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Almashish buferiga nusxalandi.",
+  "Couldn't load the speech model.": "Nutq modelini yuklab bo‘lmadi.",
+  "Couldn't paste the text.": "Matnni joylab bo‘lmadi.",
+  "Couldn't start recording.": "Yozib olishni boshlab bo‘lmadi.",
+  "No speech model yet. Run: asmir setup": "Hali nutq modeli yo‘q. Ishga tushiring: asmir setup",
+  "Recording needs PipeWire.": "Yozib olish uchun PipeWire kerak.",
+  "Speech recognition failed.": "Nutqni aniqlab bo‘lmadi."
+}

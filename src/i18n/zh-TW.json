@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "已複製到剪貼簿。",
+  "Couldn't load the speech model.": "無法載入語音模型。",
+  "Couldn't paste the text.": "無法貼上文字。",
+  "Couldn't start recording.": "無法開始錄音。",
+  "No speech model yet. Run: asmir setup": "還沒有語音模型。請執行：asmir setup",
+  "Recording needs PipeWire.": "錄音需要 PipeWire。",
+  "Speech recognition failed.": "語音辨識失敗。"
+}

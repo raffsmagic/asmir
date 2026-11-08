@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது.",
+  "Couldn't load the speech model.": "பேச்சு மாதிரியை ஏற்ற முடியவில்லை.",
+  "Couldn't paste the text.": "உரையை ஒட்ட முடியவில்லை.",
+  "Couldn't start recording.": "பதிவைத் தொடங்க முடியவில்லை.",
+  "No speech model yet. Run: asmir setup": "இன்னும் பேச்சு மாதிரி இல்லை. இயக்கவும்: asmir setup",
+  "Recording needs PipeWire.": "பதிவு செய்ய PipeWire தேவை.",
+  "Speech recognition failed.": "பேச்சு அறிதல் தோல்வியடைந்தது."
+}

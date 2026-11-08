@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "A vágólapra másolva.",
+  "Couldn't load the speech model.": "Nem sikerült betölteni a beszédmodellt.",
+  "Couldn't paste the text.": "Nem sikerült beilleszteni a szöveget.",
+  "Couldn't start recording.": "Nem sikerült elindítani a felvételt.",
+  "No speech model yet. Run: asmir setup": "Még nincs beszédmodell. Futtasd: asmir setup",
+  "Recording needs PipeWire.": "A felvételhez PipeWire szükséges.",
+  "Speech recognition failed.": "A beszédfelismerés nem sikerült."
+}

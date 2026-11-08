@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "הועתק ללוח.",
+  "Couldn't load the speech model.": "לא ניתן לטעון את מודל הדיבור.",
+  "Couldn't paste the text.": "לא ניתן להדביק את הטקסט.",
+  "Couldn't start recording.": "לא ניתן להתחיל הקלטה.",
+  "No speech model yet. Run: asmir setup": "עדיין אין מודל דיבור. הריצו: asmir setup",
+  "Recording needs PipeWire.": "הקלטה דורשת PipeWire.",
+  "Speech recognition failed.": "זיהוי הדיבור נכשל."
+}

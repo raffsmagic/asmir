@@ -1,0 +1,41 @@
+# Builds a tagged asmir release. GitHub's release tarballs leave submodules
+# out, so whisper.cpp comes as its own pinned tarball. On a new release, bump
+# pkgver and fill in the asmir checksum with `updpkgsums`.
+pkgname=asmir
+pkgver=0.1.0
+pkgrel=1
+_whisper=1.9.5
+pkgdesc="Push-to-talk dictation for Omarchy with whisper.cpp and a small waveform overlay"
+arch=('x86_64')
+url="https://github.com/raffsmagic/asmir"
+license=('MIT')
+depends=('qt6-base' 'qt6-declarative' 'layer-shell-qt' 'pipewire' 'wl-clipboard')
+makedepends=('cmake')
+optdepends=('ffmpeg: asmir transcribe <file>')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz"
+        "whisper.cpp-$_whisper.tar.gz::https://github.com/ggml-org/whisper.cpp/archive/refs/tags/v$_whisper.tar.gz")
+sha256sums=('SKIP'
+            'ff1a9053feb509ff9d7729703355541ae9690073a6b1c40eb692c962e0dc1720')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  rmdir third_party/whisper.cpp 2>/dev/null || true
+  ln -sfn "$srcdir/whisper.cpp-$_whisper" third_party/whisper.cpp
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  bin/build
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  bin/test
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 build/app/asmir "$pkgdir/usr/bin/asmir"
+  install -Dm755 omarchy/omarchy-dictation-asmir "$pkgdir/usr/bin/omarchy-dictation-asmir"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

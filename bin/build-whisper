@@ -1,0 +1,42 @@
+#!/bin/sh
+# Builds the pinned whisper.cpp (third_party/whisper.cpp) as static libraries
+# in build/whisper, which asmir.pro links. CMake is only needed for this step;
+# it comes from uvx when it isn't installed, so nothing lands system-wide.
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+SOURCE="$ROOT/third_party/whisper.cpp"
+OUT="$ROOT/build/whisper"
+
+if [ ! -f "$SOURCE/CMakeLists.txt" ]; then
+  git -C "$ROOT" submodule update --init third_party/whisper.cpp
+fi
+
+if command -v cmake >/dev/null 2>&1; then
+  CMAKE=cmake
+else
+  CMAKE="uvx cmake"
+fi
+
+# asmir targets x86-64-v3: AVX2, FMA, F16C and BMI2, which every Intel CPU
+# since Haswell (2013) and every AMD Ryzen has, and which make whisper fast.
+# The same build then runs on any of those machines. ASMIR_NATIVE=1 tunes for
+# the building CPU alone instead, which such a build may not run elsewhere.
+if [ "${ASMIR_NATIVE:-0}" = "1" ]; then
+  CPU_FLAGS="-DGGML_NATIVE=ON"
+else
+  CPU_FLAGS="-DGGML_NATIVE=OFF -DGGML_SSE42=ON -DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_FMA=ON -DGGML_F16C=ON -DGGML_BMI2=ON -DGGML_AVX512=OFF -DGGML_AVX_VNNI=OFF"
+fi
+
+$CMAKE -S "$SOURCE" -B "$OUT" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+  $CPU_FLAGS \
+  -DGGML_OPENMP=OFF \
+  -DWHISPER_BUILD_EXAMPLES=OFF \
+  -DWHISPER_BUILD_TESTS=OFF \
+  -DWHISPER_BUILD_SERVER=OFF
+$CMAKE --build "$OUT" -j"$(nproc)" --target whisper
+
+echo "Built whisper.cpp into $OUT"

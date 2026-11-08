@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "ක්ලිප්බෝඩයට පිටපත් කළා.",
+  "Couldn't load the speech model.": "කථන ආකෘතිය පූරණය කළ නොහැකි විය.",
+  "Couldn't paste the text.": "පෙළ ඇලවිය නොහැකි විය.",
+  "Couldn't start recording.": "පටිගත කිරීම ආරම්භ කළ නොහැකි විය.",
+  "No speech model yet. Run: asmir setup": "තවම කථන ආකෘතියක් නැත. ධාවනය කරන්න: asmir setup",
+  "Recording needs PipeWire.": "පටිගත කිරීමට PipeWire අවශ්‍යයි.",
+  "Speech recognition failed.": "කථන හඳුනාගැනීම අසාර්ථක විය."
+}

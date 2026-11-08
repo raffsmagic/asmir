@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Afritað á klippispjaldið.",
+  "Couldn't load the speech model.": "Ekki tókst að hlaða talmódelinu.",
+  "Couldn't paste the text.": "Ekki tókst að líma textann.",
+  "Couldn't start recording.": "Ekki tókst að hefja upptöku.",
+  "No speech model yet. Run: asmir setup": "Ekkert talmódel enn. Keyrðu: asmir setup",
+  "Recording needs PipeWire.": "Upptaka krefst PipeWire.",
+  "Speech recognition failed.": "Talgreining mistókst."
+}

@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Nokopēts starpliktuvē.",
+  "Couldn't load the speech model.": "Neizdevās ielādēt runas modeli.",
+  "Couldn't paste the text.": "Neizdevās ielīmēt tekstu.",
+  "Couldn't start recording.": "Neizdevās sākt ierakstīšanu.",
+  "No speech model yet. Run: asmir setup": "Runas modeļa vēl nav. Palaidiet: asmir setup",
+  "Recording needs PipeWire.": "Ierakstīšanai nepieciešams PipeWire.",
+  "Speech recognition failed.": "Runas atpazīšana neizdevās."
+}

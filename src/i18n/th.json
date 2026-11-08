@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+  "Couldn't load the speech model.": "โหลดโมเดลเสียงพูดไม่ได้",
+  "Couldn't paste the text.": "วางข้อความไม่ได้",
+  "Couldn't start recording.": "เริ่มบันทึกเสียงไม่ได้",
+  "No speech model yet. Run: asmir setup": "ยังไม่มีโมเดลเสียงพูด เรียกใช้: asmir setup",
+  "Recording needs PipeWire.": "การบันทึกเสียงต้องใช้ PipeWire",
+  "Speech recognition failed.": "การรู้จำเสียงพูดล้มเหลว"
+}

@@ -1,0 +1,31 @@
+#!/bin/sh
+# Builds asmir and installs it for the current user in ~/.local/bin, with the
+# omarchy-dictation-asmir adapter, without a package or sudo. Run
+# `asmir setup` once afterwards to make it Omarchy's dictation backend.
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+BIN="$HOME/.local/bin"
+
+"$ROOT/bin/build"
+mkdir -p "$BIN"
+
+# A running daemon keeps the old binary, so restart it on the new one.
+running=0
+if "$BIN/asmir" status 2>/dev/null | grep -qv stopped; then
+  running=1
+  "$BIN/asmir" quit >/dev/null 2>&1 || true
+fi
+
+install -m 755 "$ROOT/build/app/asmir" "$BIN/asmir"
+install -m 755 "$ROOT/omarchy/omarchy-dictation-asmir" "$BIN/omarchy-dictation-asmir"
+
+if [ "$running" = 1 ]; then
+  if command -v uwsm-app >/dev/null 2>&1; then
+    uwsm-app -- "$BIN/asmir" serve >/dev/null 2>&1 &
+  else
+    "$BIN/asmir" serve >/dev/null 2>&1 &
+  fi
+fi
+
+echo "Installed asmir in $BIN. If it isn't your dictation backend yet, run: asmir setup"

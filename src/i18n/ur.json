@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "کلپ بورڈ پر کاپی ہو گیا۔",
+  "Couldn't load the speech model.": "اسپیچ ماڈل لوڈ نہیں ہو سکا۔",
+  "Couldn't paste the text.": "متن پیسٹ نہیں ہو سکا۔",
+  "Couldn't start recording.": "ریکارڈنگ شروع نہیں ہو سکی۔",
+  "No speech model yet. Run: asmir setup": "ابھی کوئی اسپیچ ماڈل نہیں ہے۔ چلائیں: asmir setup",
+  "Recording needs PipeWire.": "ریکارڈنگ کے لیے PipeWire ضروری ہے۔",
+  "Speech recognition failed.": "اسپیچ کی شناخت ناکام رہی۔"
+}

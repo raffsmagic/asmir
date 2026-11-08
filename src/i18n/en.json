@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Copied to the clipboard.",
+  "Couldn't load the speech model.": "Couldn't load the speech model.",
+  "Couldn't paste the text.": "Couldn't paste the text.",
+  "Couldn't start recording.": "Couldn't start recording.",
+  "No speech model yet. Run: asmir setup": "No speech model yet. Run: asmir setup",
+  "Recording needs PipeWire.": "Recording needs PipeWire.",
+  "Speech recognition failed.": "Speech recognition failed."
+}

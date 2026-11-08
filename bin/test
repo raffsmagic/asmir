@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+[ -f "$ROOT/build/whisper/src/libwhisper.a" ] || "$ROOT/bin/build-whisper"
+
+mkdir -p "$ROOT/build/tests"
+cd "$ROOT/build/tests"
+qmake6 "$ROOT/tests/asmir_tests.pro"
+make -j"$(nproc)"
+QT_QPA_PLATFORM=offscreen ./asmir_tests "$@"

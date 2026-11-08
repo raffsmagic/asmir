@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Kopeeritud lõikelauale.",
+  "Couldn't load the speech model.": "Kõnemudelit ei õnnestunud laadida.",
+  "Couldn't paste the text.": "Teksti ei õnnestunud kleepida.",
+  "Couldn't start recording.": "Salvestamist ei õnnestunud alustada.",
+  "No speech model yet. Run: asmir setup": "Kõnemudelit veel pole. Käivita: asmir setup",
+  "Recording needs PipeWire.": "Salvestamiseks on vaja PipeWire'i.",
+  "Speech recognition failed.": "Kõnetuvastus ebaõnnestus."
+}

@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Panoya kopyalandı.",
+  "Couldn't load the speech model.": "Konuşma modeli yüklenemedi.",
+  "Couldn't paste the text.": "Metin yapıştırılamadı.",
+  "Couldn't start recording.": "Kayıt başlatılamadı.",
+  "No speech model yet. Run: asmir setup": "Henüz konuşma modeli yok. Çalıştırın: asmir setup",
+  "Recording needs PipeWire.": "Kayıt için PipeWire gerekli.",
+  "Speech recognition failed.": "Konuşma tanıma başarısız oldu."
+}

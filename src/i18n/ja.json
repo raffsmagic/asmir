@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "クリップボードにコピーしました。",
+  "Couldn't load the speech model.": "音声モデルを読み込めませんでした。",
+  "Couldn't paste the text.": "テキストを貼り付けられませんでした。",
+  "Couldn't start recording.": "録音を開始できませんでした。",
+  "No speech model yet. Run: asmir setup": "音声モデルがまだありません。実行してください: asmir setup",
+  "Recording needs PipeWire.": "録音には PipeWire が必要です。",
+  "Speech recognition failed.": "音声認識に失敗しました。"
+}

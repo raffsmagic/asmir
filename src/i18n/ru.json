@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Скопировано в буфер обмена.",
+  "Couldn't load the speech model.": "Не удалось загрузить речевую модель.",
+  "Couldn't paste the text.": "Не удалось вставить текст.",
+  "Couldn't start recording.": "Не удалось начать запись.",
+  "No speech model yet. Run: asmir setup": "Речевой модели пока нет. Выполните: asmir setup",
+  "Recording needs PipeWire.": "Для записи нужен PipeWire.",
+  "Speech recognition failed.": "Не удалось распознать речь."
+}

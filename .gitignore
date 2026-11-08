@@ -1,0 +1,6 @@
+build/
+*.o
+*.user
+pkgbuild/src/
+pkgbuild/pkg/
+pkgbuild/*.pkg.tar.*

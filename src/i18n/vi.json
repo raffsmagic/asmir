@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Đã sao chép vào bộ nhớ tạm.",
+  "Couldn't load the speech model.": "Không thể tải mô hình giọng nói.",
+  "Couldn't paste the text.": "Không thể dán văn bản.",
+  "Couldn't start recording.": "Không thể bắt đầu ghi âm.",
+  "No speech model yet. Run: asmir setup": "Chưa có mô hình giọng nói. Hãy chạy: asmir setup",
+  "Recording needs PipeWire.": "Ghi âm cần PipeWire.",
+  "Speech recognition failed.": "Nhận dạng giọng nói thất bại."
+}

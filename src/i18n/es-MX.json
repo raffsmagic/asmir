@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Copiado al portapapeles.",
+  "Couldn't load the speech model.": "No se pudo cargar el modelo de voz.",
+  "Couldn't paste the text.": "No se pudo pegar el texto.",
+  "Couldn't start recording.": "No se pudo iniciar la grabación.",
+  "No speech model yet. Run: asmir setup": "Aún no hay modelo de voz. Ejecuta: asmir setup",
+  "Recording needs PipeWire.": "Para grabar se necesita PipeWire.",
+  "Speech recognition failed.": "Falló el reconocimiento de voz."
+}

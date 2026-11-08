@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Nakopya sa clipboard.",
+  "Couldn't load the speech model.": "Hindi ma-load ang speech model.",
+  "Couldn't paste the text.": "Hindi mai-paste ang teksto.",
+  "Couldn't start recording.": "Hindi masimulan ang pag-record.",
+  "No speech model yet. Run: asmir setup": "Wala pang speech model. Patakbuhin: asmir setup",
+  "Recording needs PipeWire.": "Kailangan ng PipeWire para mag-record.",
+  "Speech recognition failed.": "Nabigo ang speech recognition."
+}

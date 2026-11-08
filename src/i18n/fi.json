@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Kopioitu leikepöydälle.",
+  "Couldn't load the speech model.": "Puhemallia ei voitu ladata.",
+  "Couldn't paste the text.": "Tekstiä ei voitu liittää.",
+  "Couldn't start recording.": "Tallennusta ei voitu aloittaa.",
+  "No speech model yet. Run: asmir setup": "Puhemallia ei vielä ole. Suorita: asmir setup",
+  "Recording needs PipeWire.": "Tallennus vaatii PipeWiren.",
+  "Speech recognition failed.": "Puheentunnistus epäonnistui."
+}

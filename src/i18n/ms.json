@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Disalin ke papan keratan.",
+  "Couldn't load the speech model.": "Tidak dapat memuatkan model pertuturan.",
+  "Couldn't paste the text.": "Tidak dapat menampal teks.",
+  "Couldn't start recording.": "Tidak dapat memulakan rakaman.",
+  "No speech model yet. Run: asmir setup": "Belum ada model pertuturan. Jalankan: asmir setup",
+  "Recording needs PipeWire.": "Rakaman memerlukan PipeWire.",
+  "Speech recognition failed.": "Pengecaman pertuturan gagal."
+}

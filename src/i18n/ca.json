@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "S'ha copiat al porta-retalls.",
+  "Couldn't load the speech model.": "No s'ha pogut carregar el model de veu.",
+  "Couldn't paste the text.": "No s'ha pogut enganxar el text.",
+  "Couldn't start recording.": "No s'ha pogut començar a gravar.",
+  "No speech model yet. Run: asmir setup": "Encara no hi ha cap model de veu. Executa: asmir setup",
+  "Recording needs PipeWire.": "Per gravar cal PipeWire.",
+  "Speech recognition failed.": "El reconeixement de veu ha fallat."
+}

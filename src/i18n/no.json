@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Kopiert til utklippstavlen.",
+  "Couldn't load the speech model.": "Kunne ikke laste talemodellen.",
+  "Couldn't paste the text.": "Kunne ikke lime inn teksten.",
+  "Couldn't start recording.": "Kunne ikke starte opptaket.",
+  "No speech model yet. Run: asmir setup": "Ingen talemodell ennå. Kjør: asmir setup",
+  "Recording needs PipeWire.": "Opptak krever PipeWire.",
+  "Speech recognition failed.": "Talegjenkjenningen mislyktes."
+}

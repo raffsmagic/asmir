@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "已复制到剪贴板。",
+  "Couldn't load the speech model.": "无法加载语音模型。",
+  "Couldn't paste the text.": "无法粘贴文本。",
+  "Couldn't start recording.": "无法开始录音。",
+  "No speech model yet. Run: asmir setup": "还没有语音模型。请运行：asmir setup",
+  "Recording needs PipeWire.": "录音需要 PipeWire。",
+  "Speech recognition failed.": "语音识别失败。"
+}

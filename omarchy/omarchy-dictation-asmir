@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# omarchy:summary=Record dictation using asmir
+# omarchy:args=<start|stop|toggle>
+
+case "${1:-}" in
+  start|toggle) asmir "$1" >/dev/null ;;
+  stop)
+    if omarchy-cmd-missing asmir; then
+      exit 0
+    else
+      asmir stop >/dev/null
+    fi
+    ;;
+  *) echo "Usage: omarchy dictation asmir <start|stop|toggle>" >&2; exit 1 ;;
+esac

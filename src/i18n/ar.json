@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "تم النسخ إلى الحافظة.",
+  "Couldn't load the speech model.": "تعذّر تحميل نموذج الكلام.",
+  "Couldn't paste the text.": "تعذّر لصق النص.",
+  "Couldn't start recording.": "تعذّر بدء التسجيل.",
+  "No speech model yet. Run: asmir setup": "لا يوجد نموذج كلام بعد. شغّل: asmir setup",
+  "Recording needs PipeWire.": "يتطلب التسجيل PipeWire.",
+  "Speech recognition failed.": "فشل التعرّف على الكلام."
+}

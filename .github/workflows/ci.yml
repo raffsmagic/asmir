@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install build dependencies
+        run: |
+          pacman -Syu --noconfirm --needed base-devel git cmake qt6-base qt6-declarative layer-shell-qt
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Build
+        run: bin/build
+
+      - name: Test
+        # The model isn't downloaded here, so the real-transcription test is
+        # skipped; everything else runs.
+        run: bin/test

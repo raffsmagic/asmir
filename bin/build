@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+[ -f "$ROOT/build/whisper/src/libwhisper.a" ] || "$ROOT/bin/build-whisper"
+
+mkdir -p "$ROOT/build/app"
+cd "$ROOT/build/app"
+qmake6 "$ROOT/asmir.pro"
+make -j"$(nproc)"
+
+echo "Built $ROOT/build/app/asmir"

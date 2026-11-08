@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Αντιγράφηκε στο πρόχειρο.",
+  "Couldn't load the speech model.": "Δεν ήταν δυνατή η φόρτωση του μοντέλου ομιλίας.",
+  "Couldn't paste the text.": "Δεν ήταν δυνατή η επικόλληση του κειμένου.",
+  "Couldn't start recording.": "Δεν ήταν δυνατή η έναρξη της εγγραφής.",
+  "No speech model yet. Run: asmir setup": "Δεν υπάρχει ακόμη μοντέλο ομιλίας. Εκτελέστε: asmir setup",
+  "Recording needs PipeWire.": "Η εγγραφή απαιτεί PipeWire.",
+  "Speech recognition failed.": "Η αναγνώριση ομιλίας απέτυχε."
+}

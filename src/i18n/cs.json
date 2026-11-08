@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Zkopírováno do schránky.",
+  "Couldn't load the speech model.": "Nepodařilo se načíst model řeči.",
+  "Couldn't paste the text.": "Nepodařilo se vložit text.",
+  "Couldn't start recording.": "Nepodařilo se spustit nahrávání.",
+  "No speech model yet. Run: asmir setup": "Zatím chybí model řeči. Spusťte: asmir setup",
+  "Recording needs PipeWire.": "Nahrávání vyžaduje PipeWire.",
+  "Speech recognition failed.": "Rozpoznávání řeči selhalo."
+}

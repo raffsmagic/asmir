@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Disalin ke papan klip.",
+  "Couldn't load the speech model.": "Tidak dapat memuat model suara.",
+  "Couldn't paste the text.": "Tidak dapat menempelkan teks.",
+  "Couldn't start recording.": "Tidak dapat mulai merekam.",
+  "No speech model yet. Run: asmir setup": "Belum ada model suara. Jalankan: asmir setup",
+  "Recording needs PipeWire.": "Perekaman memerlukan PipeWire.",
+  "Speech recognition failed.": "Pengenalan suara gagal."
+}

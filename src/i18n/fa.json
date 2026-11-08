@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "در کلیپ‌بورد کپی شد.",
+  "Couldn't load the speech model.": "مدل گفتار بارگذاری نشد.",
+  "Couldn't paste the text.": "متن چسبانده نشد.",
+  "Couldn't start recording.": "ضبط شروع نشد.",
+  "No speech model yet. Run: asmir setup": "هنوز مدل گفتاری وجود ندارد. اجرا کنید: asmir setup",
+  "Recording needs PipeWire.": "ضبط به PipeWire نیاز دارد.",
+  "Speech recognition failed.": "تشخیص گفتار ناموفق بود."
+}

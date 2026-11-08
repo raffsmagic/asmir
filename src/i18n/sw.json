@@ -1,0 +1,9 @@
+{
+  "Copied to the clipboard.": "Imenakiliwa kwenye ubao wa kunakili.",
+  "Couldn't load the speech model.": "Imeshindwa kupakia modeli ya usemi.",
+  "Couldn't paste the text.": "Imeshindwa kubandika maandishi.",
+  "Couldn't start recording.": "Imeshindwa kuanza kurekodi.",
+  "No speech model yet. Run: asmir setup": "Bado hakuna modeli ya usemi. Endesha: asmir setup",
+  "Recording needs PipeWire.": "Kurekodi kunahitaji PipeWire.",
+  "Speech recognition failed.": "Utambuzi wa usemi umeshindwa."
+}
