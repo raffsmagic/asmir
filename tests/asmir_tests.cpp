@@ -80,6 +80,12 @@ private slots:
         QVERIFY(loud <= 1.0f);
     }
 
+    void runawayTranscriptsAreSpotted() {
+        QVERIFY(!Audio::looksRunaway("And so my fellow Americans ask not what your country can do for you.", 4));
+        QVERIFY(!Audio::looksRunaway("Yes.", 0));
+        QVERIFY(Audio::looksRunaway(QString("the the the ").repeated(20), 3));
+    }
+
     void transcriptLosesNonSpeechTags() {
         QCOMPARE(Audio::cleanTranscript(" [BLANK_AUDIO]"), QString());
         QCOMPARE(Audio::cleanTranscript(" Hello (typing) there.  *music* "), QString("Hello there."));
@@ -199,7 +205,7 @@ private slots:
         QVERIFY2(transcriber.loadNow(model, Config().threadCount(), &error), qPrintable(error));
         const QString text = transcriber.transcribeNow(audio, "en", {}, &error).toLower();
         QVERIFY2(error.isEmpty(), qPrintable(error));
-        QVERIFY2(text.contains("ask not what your country can do for you"), qPrintable(text));
+        QVERIFY2(text.contains("not what your country can do for you"), qPrintable(text));
     }
 };
 

@@ -37,6 +37,11 @@ float peak(const QVector<float> &samples) {
     return loudest;
 }
 
+bool looksRunaway(const QString &text, int seconds) {
+    const qsizetype words = text.split(QRegularExpression(R"(\s+)"), Qt::SkipEmptyParts).size();
+    return words > 5 * qMax(1, seconds) + 8;
+}
+
 QString cleanTranscript(const QString &text) {
     static const QRegularExpression tags(R"(\[[^\]]*\]|\([^)]*\)|\*[^*]*\*)");
     static const QRegularExpression spaces(R"(\s+)");

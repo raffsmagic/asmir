@@ -23,6 +23,10 @@ float level(const float *samples, qsizetype count);
 // The loudest sample, from 0 to 1.
 float peak(const QVector<float> &samples);
 
+// True when a transcript has far more words than seconds of speech allow,
+// the sign of whisper repeating itself.
+bool looksRunaway(const QString &text, int seconds);
+
 // What whisper heard, without the tags it writes for sounds that aren't
 // words, such as [BLANK_AUDIO] or (typing), and with its spacing tidied.
 QString cleanTranscript(const QString &text);
