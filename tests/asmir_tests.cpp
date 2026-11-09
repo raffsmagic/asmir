@@ -108,8 +108,19 @@ private slots:
     }
 
     void modelNamesResolveToFiles() {
+        // An empty models directory, so the downloads on this machine don't count.
+        QTemporaryDir data;
+        const QByteArray savedData = qgetenv("XDG_DATA_HOME");
+        qputenv("XDG_DATA_HOME", data.path().toLocal8Bit());
+        auto restore = qScopeGuard([&] {
+            if (savedData.isEmpty())
+                qunsetenv("XDG_DATA_HOME");
+            else
+                qputenv("XDG_DATA_HOME", savedData);
+        });
+
         Config config;
-        QCOMPARE(QFileInfo(config.modelPath()).fileName(), QString("ggml-base.en-q5_1.bin"));
+        QCOMPARE(QFileInfo(config.modelPath()).fileName(), QString("ggml-tiny.en-q5_1.bin"));
         config.model = "ggml-small.en-q5_1.bin";
         QCOMPARE(QFileInfo(config.modelPath()).fileName(), QString("ggml-small.en-q5_1.bin"));
         config.model = "/opt/models/custom.bin";
@@ -118,7 +129,35 @@ private slots:
         QVERIFY(Models::find("base.en-q5_1"));
         QVERIFY(Models::find("ggml-small.en-q5_1.bin"));
         QVERIFY(!Models::find("huge"));
-        QCOMPARE(Models::find(Config::defaultModelName())->fileName(), QString("ggml-base.en-q5_1.bin"));
+        QCOMPARE(Models::find(Config::defaultModelName())->fileName(), QString("ggml-tiny.en-q5_1.bin"));
+    }
+
+    void keepsTheOldDefaultUntilTheNewOneIsDownloaded() {
+        QTemporaryDir data;
+        const QByteArray savedData = qgetenv("XDG_DATA_HOME");
+        qputenv("XDG_DATA_HOME", data.path().toLocal8Bit());
+        auto restore = qScopeGuard([&] {
+            if (savedData.isEmpty())
+                qunsetenv("XDG_DATA_HOME");
+            else
+                qputenv("XDG_DATA_HOME", savedData);
+        });
+        QDir().mkpath(Config::modelsDirectory());
+        auto touch = [](const QString &name) {
+            QFile file(Config::modelsDirectory() + "/" + name);
+            QVERIFY(file.open(QIODevice::WriteOnly));
+        };
+
+        // Upgraded from 0.1.1 with only base downloaded: keep using it.
+        touch("ggml-base.en-q5_1.bin");
+        QCOMPARE(QFileInfo(Config().modelPath()).fileName(), QString("ggml-base.en-q5_1.bin"));
+        // Once tiny is there, it wins.
+        touch("ggml-tiny.en-q5_1.bin");
+        QCOMPARE(QFileInfo(Config().modelPath()).fileName(), QString("ggml-tiny.en-q5_1.bin"));
+        // A model set in the config is never swapped.
+        Config chosen;
+        chosen.model = "small.en-q5_1";
+        QCOMPARE(QFileInfo(chosen.modelPath()).fileName(), QString("ggml-small.en-q5_1.bin"));
     }
 
     void menuEntryJoinsTheUsersExtensions() {

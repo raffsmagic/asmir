@@ -19,8 +19,9 @@ namespace Models {
 
 const QList<Model> &known() {
     // q5_1 is the quantization asmir is built around: a third of the size of
-    // the full model with nearly the same accuracy. base.en is the default;
-    // small.en is slower and more accurate.
+    // the full model with nearly the same accuracy. tiny.en is the default,
+    // because snappy matters most in dictation; base.en and small.en are
+    // slower and more accurate.
     static const QList<Model> models{
         {"tiny.en-q5_1", 32166155, "c77c5766f1cef09b6b7d47f21b546cbddd4157886b3b5d6d4f709e91e66c7c2b"},
         {"base.en-q5_1", 59721011, "4baf70dd0d7c4247ba2b81fafd9c01005ac77c2f9ef064e00dcf195d0e2fdd2f"},

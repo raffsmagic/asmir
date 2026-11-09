@@ -39,8 +39,8 @@ bool Transcriber::loadNow(const QString &modelPath, int threads, QString *error)
             *error = tr("No speech model yet. Run: asmir setup");
         return false;
     }
-    // The model stays loaded (about 60 MB for base.en-q5_1); the working
-    // memory whisper decodes in (about 100 MB more) only exists while it
+    // The model stays loaded (about 30 MB for tiny.en-q5_1, 60 MB for
+    // base.en-q5_1); the working memory whisper decodes in only exists while it
     // transcribes, so the daemon stays small between dictations.
     whisper_context_params params = whisper_context_default_params();
     m_context = whisper_init_from_file_with_params_no_state(modelPath.toLocal8Bit().constData(), params);

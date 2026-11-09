@@ -39,7 +39,7 @@ Usage:
   asmir serve                    Run the daemon in the foreground
   asmir transcribe <file>        Print what's said in an audio file (needs ffmpeg)
   asmir model                    Show the model in use and the ones available
-  asmir model download [name]    Fetch a model (default: base.en-q5_1)
+  asmir model download [name]    Fetch a model (default: tiny.en-q5_1)
   asmir --version
 
 Settings live in ~/.config/asmir/config (model, language, prompt, threads,

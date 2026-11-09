@@ -19,6 +19,8 @@ struct Config {
 
     // The model file to load: model as given when it is a path, otherwise the
     // file of that name (with or without ggml- and .bin) in the models directory.
+    // With no model set it is the default, or base.en-q5_1 for an install that
+    // has only that one (the default before 0.1.2).
     QString modelPath() const;
     int threadCount() const;
 };

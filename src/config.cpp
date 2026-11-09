@@ -15,7 +15,23 @@ QString Config::modelsDirectory() {
 }
 
 QString Config::defaultModelName() {
-    return "base.en-q5_1";
+    return "tiny.en-q5_1";
+}
+
+namespace {
+
+// The default before 0.1.2. An install that downloaded it and never set a
+// model keeps using it until the new default is downloaded.
+const char *PreviousDefaultModel = "base.en-q5_1";
+
+QString fileInModelsDirectory(QString name) {
+    if (!name.startsWith("ggml-"))
+        name.prepend("ggml-");
+    if (!name.endsWith(".bin"))
+        name.append(".bin");
+    return Config::modelsDirectory() + "/" + name;
+}
+
 }
 
 Config Config::load(const QString &file) {
@@ -54,15 +70,14 @@ Config Config::parse(const QString &text) {
 }
 
 QString Config::modelPath() const {
-    const QString name = model.isEmpty() ? defaultModelName() : model;
-    if (name.contains('/'))
-        return QDir::cleanPath(name.startsWith("~/") ? QDir::homePath() + name.mid(1) : name);
-    QString file = name;
-    if (!file.startsWith("ggml-"))
-        file.prepend("ggml-");
-    if (!file.endsWith(".bin"))
-        file.append(".bin");
-    return modelsDirectory() + "/" + file;
+    if (model.isEmpty()) {
+        const QString current = fileInModelsDirectory(defaultModelName());
+        const QString previous = fileInModelsDirectory(PreviousDefaultModel);
+        return !QFile::exists(current) && QFile::exists(previous) ? previous : current;
+    }
+    if (model.contains('/'))
+        return QDir::cleanPath(model.startsWith("~/") ? QDir::homePath() + model.mid(1) : model);
+    return fileInModelsDirectory(model);
 }
 
 int Config::threadCount() const {

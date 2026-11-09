@@ -27,7 +27,7 @@ asmir setup                        # fetch the model and plug asmir into Omarchy
 The AUR package is on its way: the AUR has paused new account sign-ups for
 now. Once it's up, this becomes `yay -S asmir`.
 
-`asmir setup` does the whole dance: downloads the speech model (60 MB, checked
+`asmir setup` does the whole dance: downloads the speech model (32 MB, checked
 against its SHA-256), adds asmir to Omarchy's Setup > Defaults > Dictation menu
 next to the other backends and picks it there, has it start at login, and
 reloads Hyprland. Then:
@@ -80,7 +80,7 @@ asmir setup
 The defaults are the point. If you insist, `~/.config/asmir/config` takes:
 
 ```ini
-model = base.en-q5_1      # small.en-q5_1: more accurate, takes its time
+model = tiny.en-q5_1      # base.en-q5_1 or small.en-q5_1: more accurate, slower
 language = en             # "auto" with a multilingual model like small-q5_1
 prompt = Omarchy, Hyprland, Neovim.   # words and spellings to expect
 threads = 0               # 0 = half your CPU threads, up to 8
@@ -113,7 +113,8 @@ tells you so. GNOME doesn't do layer-shell, so the overlay won't show there.
 
 - C++ and Qt 6, built like Omarchy's own apps, with the overlay in QML.
 - whisper.cpp 1.9.5, pinned as a submodule and compiled into the binary.
-- A quantized Whisper model (`base.en-q5_1`): a third of the full size.
+- A quantized Whisper model (`tiny.en-q5_1`): a third of the full size, and
+  fast enough that the text lands about as soon as you let go.
 - A small daemon keeps the model loaded between dictations, and only borrows
   whisper's working memory while it transcribes.
 - Recording straight through PipeWire: the connection stays open, and a
