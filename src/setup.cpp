@@ -48,6 +48,8 @@ bool install(const QString &resource, const QString &target, bool executable) {
     return true;
 }
 
+const char *MenuKey = "setup.default.dictation.asmir";
+
 int runQuietly(const QString &program, const QStringList &arguments) {
     QProcess process;
     process.setProcessChannelMode(QProcess::ForwardedErrorChannel);
@@ -58,6 +60,28 @@ int runQuietly(const QString &program, const QStringList &arguments) {
     return process.exitStatus() == QProcess::NormalExit ? process.exitCode() : -1;
 }
 
+}
+
+QString withMenuEntry(const QString &existing) {
+    if (existing.contains(MenuKey))
+        return existing;
+    // Picking it from the menu runs `asmir setup` where its output shows, the
+    // way Omarchy runs its own dictation installers.
+    const QString entry = QString(R"(  "%1": {"icon":"󰍬","label":"asmir","checked":"[[ \"$(omarchy-default-dictation)\" == \"asmir\" ]]","action":"omarchy-launch-floating-terminal-with-presentation asmir setup"},)")
+                              .arg(MenuKey);
+    if (existing.trimmed().isEmpty())
+        return "{\n" + entry + "\n}\n";
+
+    // Insert right after the opening brace. The trailing comma is fine there:
+    // Omarchy's parser allows trailing commas, and any entries follow it.
+    QStringList lines = existing.split('\n');
+    for (int i = 0; i < lines.size(); ++i) {
+        if (lines.at(i).trimmed() == "{") {
+            lines.insert(i + 1, entry);
+            return lines.join('\n');
+        }
+    }
+    return {};
 }
 
 int run() {
@@ -100,6 +124,25 @@ int run() {
     if (!install(":/omarchy/shortcuts.lua", hook, false)) {
         fail(QString("Couldn't write %1.").arg(hook));
         return 1;
+    }
+
+    // List asmir in Omarchy's own Setup > Defaults > Dictation menu.
+    const QString menu = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)
+                         + "/omarchy/extensions/omarchy-menu.jsonc";
+    QFile current(menu);
+    const QString before = current.open(QIODevice::ReadOnly) ? QString::fromUtf8(current.readAll()) : QString();
+    current.close();
+    const QString after = withMenuEntry(before);
+    if (after.isEmpty()) {
+        say(QString("Left %1 alone: add asmir under Setup > Defaults > Dictation by hand if you like.").arg(menu));
+    } else if (after != before) {
+        QDir().mkpath(QFileInfo(menu).absolutePath());
+        QSaveFile file(menu);
+        if (!file.open(QIODevice::WriteOnly) || file.write(after.toUtf8()) < 0 || !file.commit()) {
+            fail(QString("Couldn't write %1.").arg(menu));
+            return 1;
+        }
+        say("Added asmir to Setup > Defaults > Dictation.");
     }
 
     if (runQuietly("omarchy-dictation-use", {"asmir"}) != 0) {

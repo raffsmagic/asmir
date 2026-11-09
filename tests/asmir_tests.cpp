@@ -1,6 +1,7 @@
 #include "audio.h"
 #include "config.h"
 #include "models.h"
+#include "setup.h"
 #include "theme.h"
 #include "transcriber.h"
 #include "translator.h"
@@ -112,6 +113,26 @@ private slots:
         QVERIFY(Models::find("ggml-small.en-q5_1.bin"));
         QVERIFY(!Models::find("huge"));
         QCOMPARE(Models::find(Config::defaultModelName())->fileName(), QString("ggml-base.en-q5_1.bin"));
+    }
+
+    void menuEntryJoinsTheUsersExtensions() {
+        // The sample file Omarchy ships: comments around an empty object.
+        const QString sample = "{\n  // Extend the menu.\n  // \"personal\": {}\n}\n";
+        const QString added = Setup::withMenuEntry(sample);
+        QVERIFY(added.startsWith("{\n  \"setup.default.dictation.asmir\""));
+        QVERIFY(added.contains("// Extend the menu."));
+        // Running setup again changes nothing.
+        QCOMPARE(Setup::withMenuEntry(added), added);
+
+        // Someone's own entries stay, with asmir ahead of them.
+        const QString own = "{\n  \"personal\": {\"label\": \"Mine\"}\n}\n";
+        const QString merged = Setup::withMenuEntry(own);
+        QVERIFY(merged.indexOf("dictation.asmir") < merged.indexOf("personal"));
+        QVERIFY(merged.contains("\"personal\": {\"label\": \"Mine\"}"));
+
+        // No file yet, and a file that isn't laid out as expected.
+        QVERIFY(Setup::withMenuEntry({}).contains("dictation.asmir"));
+        QVERIFY(Setup::withMenuEntry("{ \"x\": 1 }").isEmpty());
     }
 
     void themeReadsOmarchyColors() {

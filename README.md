@@ -28,8 +28,9 @@ The AUR package is on its way: the AUR has paused new account sign-ups for
 now. Once it's up, this becomes `yay -S asmir`.
 
 `asmir setup` does the whole dance: downloads the speech model (60 MB, checked
-against its SHA-256), makes asmir your backend under
-Setup > Defaults > Dictation, has it start at login, and reloads Hyprland. Then:
+against its SHA-256), adds asmir to Omarchy's Setup > Defaults > Dictation menu
+next to the other backends and picks it there, has it start at login, and
+reloads Hyprland. Then:
 
 | Key | Does |
 | --- | --- |

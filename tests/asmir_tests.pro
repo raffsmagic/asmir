@@ -15,6 +15,10 @@ HEADERS += \
     ../src/audio.h \
     ../src/config.h \
     ../src/models.h \
+    ../src/setup.h \
+    ../src/client.h \
+    ../src/dictation.h \
+    ../src/recorder.h \
     ../src/theme.h \
     ../src/transcriber.h \
     ../src/translator.h
@@ -24,6 +28,10 @@ SOURCES += \
     ../src/audio.cpp \
     ../src/config.cpp \
     ../src/models.cpp \
+    ../src/setup.cpp \
+    ../src/client.cpp \
+    ../src/dictation.cpp \
+    ../src/recorder.cpp \
     ../src/theme.cpp \
     ../src/transcriber.cpp \
     ../src/translator.cpp
