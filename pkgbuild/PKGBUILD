@@ -14,7 +14,7 @@ makedepends=('cmake')
 optdepends=('ffmpeg: asmir transcribe <file>')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz"
         "whisper.cpp-$_whisper.tar.gz::https://github.com/ggml-org/whisper.cpp/archive/refs/tags/v$_whisper.tar.gz")
-sha256sums=('SKIP'
+sha256sums=('f55bf3640bd9374f620afee1f68ad00105ced143867301f1b471558ce9d72099'
             'ff1a9053feb509ff9d7729703355541ae9690073a6b1c40eb692c962e0dc1720')
 
 prepare() {
