@@ -2,54 +2,87 @@
 
 ![The waveform asmir shows while it listens](docs/overlay.png)
 
-Push-to-talk dictation for [Omarchy](https://omarchy.org). Hold Right Alt,
-talk, let go, and what you said is pasted where you were typing. While it
-listens, a small waveform sits at the bottom of the screen in your theme's
-colors.
+**Whisper to your Omarchy.**
 
-The name is a nod to ASMR: you whisper, it listens. (Fittingly, it runs on
-whisper.cpp.)
+Hold Right Alt. Say the thing. Let go. Your words land where your cursor was.
+That's it. That's the app.
 
-Speech is recognized on your own computer by
-[whisper.cpp](https://github.com/ggml-org/whisper.cpp), with a small quantized
-Whisper model (`base.en-q5_1`, 60 MB). Nothing is sent anywhere.
+asmir is push-to-talk dictation built for [Omarchy](https://omarchy.org) and
+nothing else on purpose. It listens through a tiny waveform at the bottom of
+the screen, dressed in your theme, and turns speech into text right on your
+machine with [whisper.cpp](https://github.com/ggml-org/whisper.cpp). No cloud,
+no account, no subscription. Your rambling stays yours.
 
-## Install
+*Why "asmir"? It's ASMR for your keyboard: you whisper, it listens. And yes,
+it runs on whisper.cpp. We couldn't help ourselves.*
 
-asmir plugs into Omarchy's dictation the same way the other backends under
-Setup > Defaults > Dictation do, so Omarchy's keys work with it: hold Right Alt
-to talk, or press Alt + Space to start and stop.
+## Get it
+
+```sh
+yay -S asmir    # or Super + Space → Install → AUR → asmir
+asmir setup     # fetch the model and plug asmir into Omarchy's dictation
+```
+
+`asmir setup` does the whole dance: downloads the speech model (60 MB, checked
+against its SHA-256), makes asmir your backend under
+Setup > Defaults > Dictation, has it start at login, and reloads Hyprland. Then:
+
+| Key | Does |
+| --- | --- |
+| Hold **Right Alt** | Talk while held, paste when you let go |
+| **Alt + Space** | Start, then press again to stop and paste |
+
+Changed your mind? Pick another backend under Setup > Defaults > Dictation.
+No hard feelings.
+
+### Building it yourself
 
 ```sh
 git clone --recursive https://github.com/raffsmagic/asmir
 cd asmir
-bin/dev-install   # builds asmir and installs it in ~/.local/bin
-asmir setup       # downloads the model and makes asmir the dictation backend
+bin/dev-install   # builds and installs into ~/.local/bin
+asmir setup
 ```
 
-To use another backend again, pick it under Setup > Defaults > Dictation.
+## What you need
 
-### Requirements
+- **Omarchy.** Other Hyprland or layer-shell setups work too, minus the
+  conveniences (see [Off the beaten path](#off-the-beaten-path)).
+- **A processor from this decade, roughly:** x86-64 with AVX2, meaning Intel
+  from 2013 on (Haswell and newer) or AMD from 2015 on, every Ryzen included.
+  That's what keeps whisper quick. ARM isn't supported yet.
+- **A microphone.** asmir uses whichever one is your default right now, so
+  plugging in a headset mid-session just works.
 
-- Omarchy, or another Hyprland setup with PipeWire (see [Without Omarchy](#without-omarchy))
-- An x86-64 processor with AVX2: Intel from 2013 on (Haswell and newer), or
-  AMD from 2015 on, including every Ryzen
-- To build: Qt 6, layer-shell-qt and a C++ compiler, which Omarchy includes.
-  whisper.cpp is built with CMake; when CMake isn't installed, `bin/build-whisper`
-  runs it through `uvx`.
+## Omarchy-native, all the way down
 
-## How it works
+- **Your theme.** Accent, background, window rounding and font come from
+  Omarchy, and the overlay follows a theme switch live.
+- **Your language.** Messages come in all 50 of Omarchy's languages and follow
+  Setup > Language as you change it.
+- **Your keys.** asmir plugs into `omarchy-dictation`, so Omarchy's Right Alt
+  and Alt + Space work out of the box, and so does anything else that calls it.
+- **Your paste.** Text goes in through Omarchy's own paste, which knows a
+  terminal wants Ctrl+Shift+V.
+- **Out of your way.** The overlay is a layer-shell surface: it shows on the
+  screen you're using and never steals focus or clicks.
+- **Honest about the mic.** A microphone that's been idle needs a moment to
+  wake up. Until the first real sound arrives, a faint glint runs across flat
+  bars. When they come alive, talk.
 
-- **A small daemon** (`asmir serve`) keeps the model loaded, so recording
-  starts as soon as you press the key. `asmir setup` has Omarchy start it at
-  login.
-- **Recording** goes through PipeWire's `pw-record`, so each dictation uses
-  whatever microphone is the default at that moment.
-- **The overlay** is a layer-shell surface: it shows on the screen you're
-  using, never takes the keyboard or the mouse, follows your Omarchy theme,
-  window rounding and language as they change, and uses your Omarchy font.
-- **The text** is pasted through Omarchy's own paste command, which sends the
-  right paste keys for the focused window (Ctrl+Shift+V in terminals).
+## Tune it (or don't)
+
+The defaults are the point. If you insist, `~/.config/asmir/config` takes:
+
+```ini
+model = base.en-q5_1      # small.en-q5_1: more accurate, takes its time
+language = en             # "auto" with a multilingual model like small-q5_1
+prompt = Omarchy, Hyprland, Neovim.   # words and spellings to expect
+threads = 0               # 0 = half your CPU threads, up to 8
+trailing_space = true     # back-to-back dictations don't run together
+```
+
+Run `asmir quit` after editing; the next dictation starts it fresh.
 
 ## Commands
 
@@ -60,33 +93,37 @@ To use another backend again, pick it under Setup > Defaults > Dictation.
 | `asmir status [--json]` | `idle`, `recording`, `transcribing`, or `stopped` |
 | `asmir quit` | Stop the daemon |
 | `asmir serve` | Run the daemon in the foreground |
-| `asmir transcribe <file> [--json]` | Print what's said in an audio file (uses ffmpeg) |
-| `asmir model` | Show the model in use and the ones available |
-| `asmir model download [name]` | Fetch a model, checked against its SHA-256 |
+| `asmir transcribe <file> [--json]` | Print what's said in an audio file (needs ffmpeg) |
+| `asmir model` | The model in use and the ones on offer |
+| `asmir model download [name]` | Fetch a model, checksum and all |
 
-## Settings
+## Off the beaten path
 
-Everything is optional. Put any of these in `~/.config/asmir/config`:
+On another Wayland compositor with layer-shell (Hyprland, Sway, KDE Plasma,
+niri), bind `asmir start` to a key press and `asmir stop` to its release.
+Without Omarchy's paste command, asmir leaves the text on the clipboard and
+tells you so. GNOME doesn't do layer-shell, so the overlay won't show there.
 
-```ini
-model = base.en-q5_1      # small.en-q5_1 is more accurate and slower
-language = en             # "auto" with a multilingual model such as small-q5_1
-prompt = Omarchy, Hyprland, Neovim.   # words and spelling to expect
-threads = 0               # 0 picks half the CPU threads, up to 8
-trailing_space = true     # keeps back-to-back dictations apart
-```
+## Under the hood
 
-The daemon reads the settings when it starts: `asmir quit`, and the next
-dictation starts it again.
+- C++ and Qt 6, built like Omarchy's own apps, with the overlay in QML.
+- whisper.cpp 1.9.5, pinned as a submodule and compiled into the binary.
+- A quantized Whisper model (`base.en-q5_1`): a third of the full size.
+- A small daemon keeps the model loaded between dictations, and only borrows
+  whisper's working memory while it transcribes.
+- Recording through PipeWire's `pw-record`, which follows your default mic.
 
-## Without Omarchy
+## Where it's headed
 
-On another Wayland compositor with layer-shell support (Hyprland, Sway, KDE
-Plasma, niri), bind a key to `asmir start` on press and `asmir stop` on
-release. Without Omarchy's paste command, asmir copies the text to the
-clipboard and says so in the overlay.
+- Faster first words: record through PipeWire directly instead of starting a
+  recorder for every dictation.
+- GPU acceleration through Vulkan, for the bigger and more accurate models.
+- ARM, for Omarchy on Apple Silicon and Snapdragon.
+- A way for voice assistants and other tools to use asmir as their local ears.
 
-## Development
+Want one of these, or something else? See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Hacking on it
 
 ```sh
 bin/build     # build/app/asmir
@@ -98,10 +135,8 @@ bin/test      # unit tests, plus a real transcription when the model is download
 - `ASMIR_NATIVE=1 bin/build-whisper` tunes whisper.cpp for the building CPU
   only (delete `build/whisper` first).
 
-Messages are translated into Omarchy's languages in `src/i18n/`; fixes from
-native speakers are very welcome. Issues and pull requests are welcome too.
-
 ## License
 
-MIT. See [LICENSE](LICENSE). Built on [whisper.cpp](https://github.com/ggml-org/whisper.cpp)
-(MIT) and the [Omarchy](https://github.com/omacom/omarchy) app templates.
+MIT. See [LICENSE](LICENSE). Standing on the shoulders of
+[whisper.cpp](https://github.com/ggml-org/whisper.cpp) and the
+[Omarchy](https://github.com/omacom/omarchy) app templates.
