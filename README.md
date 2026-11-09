@@ -19,9 +19,13 @@ it runs on whisper.cpp. We couldn't help ourselves.*
 ## Get it
 
 ```sh
-yay -S asmir    # or Super + Space → Install → AUR → asmir
-asmir setup     # fetch the model and plug asmir into Omarchy's dictation
+git clone https://github.com/raffsmagic/asmir
+cd asmir/pkgbuild && makepkg -si   # builds the 0.1.0 release into a real package
+asmir setup                        # fetch the model and plug asmir into Omarchy's dictation
 ```
+
+The AUR package is on its way: the AUR has paused new account sign-ups for
+now. Once it's up, this becomes `yay -S asmir`.
 
 `asmir setup` does the whole dance: downloads the speech model (60 MB, checked
 against its SHA-256), makes asmir your backend under
