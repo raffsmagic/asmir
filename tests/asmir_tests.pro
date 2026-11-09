@@ -1,6 +1,7 @@
 QT += core gui qml quick network testlib
 
-CONFIG += c++17 testcase
+CONFIG += c++17 testcase link_pkgconfig
+PKGCONFIG += libpipewire-0.3
 TARGET = asmir_tests
 TEMPLATE = app
 

@@ -1,17 +1,23 @@
 #pragma once
 
 #include <QByteArray>
+#include <QMutex>
 #include <QObject>
 #include <QVector>
 
-class QProcess;
+struct pw_thread_loop;
+struct pw_context;
+struct pw_core;
+struct pw_stream;
 
 // Records the default microphone as 16 kHz mono floats for whisper, and
 // reports how loud each slice is so the overlay can draw the waveform.
 //
-// It records through PipeWire's pw-record rather than Qt Multimedia: a new
-// pw-record stream always follows the microphone that's the default right
-// now (a headset plugged in after login included), and asmir stays small.
+// It talks to PipeWire directly. The connection to PipeWire stays open for
+// the daemon's life, which uses no microphone, and a capture stream exists
+// only while recording, so a press starts recording without first starting a
+// recorder program. Each new stream goes to whichever microphone is the
+// default at that moment, so a headset plugged in later just works.
 class Recorder : public QObject {
     Q_OBJECT
 
@@ -22,10 +28,7 @@ public:
     // False, with a message in error, when recording can't start.
     bool start(QString *error = nullptr);
     QVector<float> stop();
-    bool recording() const { return m_process != nullptr; }
-
-    // The pw-record command line, for tests and `asmir serve` diagnostics.
-    static QStringList arguments();
+    bool recording() const { return m_stream != nullptr; }
 
 signals:
     // About 30 times a second while recording, from 0 to 1.
@@ -36,9 +39,24 @@ signals:
     void heard();
 
 private:
+    static void onProcess(void *data);
+    static void onCoreError(void *data, uint32_t id, int seq, int res, const char *message);
+    bool connectToPipeWire();
+    void disconnectFromPipeWire();
     void read();
 
-    QProcess *m_process = nullptr;
+    pw_thread_loop *m_loop = nullptr;
+    pw_context *m_context = nullptr;
+    pw_core *m_core = nullptr;
+    pw_stream *m_stream = nullptr;
+    bool m_coreLost = false;
+    struct Listeners;
+    Listeners *m_listeners = nullptr;
+
+    // Filled on PipeWire's thread, emptied on the main thread.
+    QMutex m_mutex;
+    QByteArray m_incoming;
+
     QByteArray m_remainder;
     QVector<float> m_samples;
     qsizetype m_levelFrom = 0;

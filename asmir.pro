@@ -1,6 +1,7 @@
 QT += core gui qml quick network
 
-CONFIG += c++17 release
+CONFIG += c++17 release link_pkgconfig
+PKGCONFIG += libpipewire-0.3
 TARGET = asmir
 TEMPLATE = app
 

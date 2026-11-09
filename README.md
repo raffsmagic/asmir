@@ -116,12 +116,11 @@ tells you so. GNOME doesn't do layer-shell, so the overlay won't show there.
 - A quantized Whisper model (`base.en-q5_1`): a third of the full size.
 - A small daemon keeps the model loaded between dictations, and only borrows
   whisper's working memory while it transcribes.
-- Recording through PipeWire's `pw-record`, which follows your default mic.
+- Recording straight through PipeWire: the connection stays open, and a
+  capture stream exists only while you hold the key, on your default mic.
 
 ## Where it's headed
 
-- Faster first words: record through PipeWire directly instead of starting a
-  recorder for every dictation.
 - GPU acceleration through Vulkan, for the bigger and more accurate models.
 - ARM, for Omarchy on Apple Silicon and Snapdragon.
 - A way for voice assistants and other tools to use asmir as their local ears.
