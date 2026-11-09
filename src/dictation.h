@@ -20,6 +20,9 @@ class Dictation : public QObject {
     Q_PROPERTY(QString state READ state NOTIFY stateChanged)
     Q_PROPERTY(QVariantList levels READ levels NOTIFY levelsChanged)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
+    // True from the key press until the microphone delivers real sound, so
+    // the overlay can show that it isn't listening yet.
+    Q_PROPERTY(bool waking READ waking NOTIFY wakingChanged)
 
 public:
     // Waveform bars in the overlay.
@@ -35,6 +38,7 @@ public:
     QString state() const { return m_state; }
     QVariantList levels() const { return m_levels; }
     QString message() const { return m_message; }
+    bool waking() const { return m_waking; }
 
     static QString socketPath();
 
@@ -50,6 +54,7 @@ signals:
     void stateChanged();
     void levelsChanged();
     void messageChanged();
+    void wakingChanged();
     void requestLoad(const QString &modelPath, int threads);
     void requestTranscription(quint64 id, const QVector<float> &audio, const QString &language, const QString &prompt);
 
@@ -74,5 +79,6 @@ private:
     quint64 m_nextId = 1;
     int m_pending = 0;
     bool m_modelFailed = false;
+    bool m_waking = false;
     QString m_modelError;
 };

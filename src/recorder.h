@@ -30,6 +30,10 @@ public:
 signals:
     // About 30 times a second while recording, from 0 to 1.
     void level(float value);
+    // Once per recording, when the first real sound arrives. A microphone that
+    // PipeWire suspended after a few idle seconds delivers silence, or nothing,
+    // for a moment while it wakes; words spoken before this are lost.
+    void heard();
 
 private:
     void read();
@@ -38,4 +42,5 @@ private:
     QByteArray m_remainder;
     QVector<float> m_samples;
     qsizetype m_levelFrom = 0;
+    bool m_heard = false;
 };

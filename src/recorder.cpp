@@ -41,6 +41,7 @@ bool Recorder::start(QString *error) {
     m_samples.clear();
     m_samples.reserve(Audio::Rate * 30);
     m_levelFrom = 0;
+    m_heard = false;
 
     m_process = new QProcess(this);
     m_process->setProcessChannelMode(QProcess::SeparateChannels);
@@ -79,7 +80,17 @@ void Recorder::read() {
     const QByteArray chunk = m_process->readAllStandardOutput();
     if (chunk.isEmpty())
         return;
+    const qsizetype before = m_samples.size();
     Audio::appendFloats(chunk, m_remainder, m_samples);
+    if (!m_heard) {
+        for (qsizetype i = before; i < m_samples.size(); ++i) {
+            if (m_samples.at(i) != 0.0f) {
+                m_heard = true;
+                emit heard();
+                break;
+            }
+        }
+    }
     while (m_samples.size() - m_levelFrom >= LevelSlice) {
         emit level(Audio::level(m_samples.constData() + m_levelFrom, LevelSlice));
         m_levelFrom += LevelSlice;

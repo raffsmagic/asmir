@@ -34,6 +34,10 @@ Dictation::Dictation(QObject *parent) : QObject(parent), m_config(Config::load()
     });
 
     connect(&m_recorder, &Recorder::level, this, &Dictation::pushLevel);
+    connect(&m_recorder, &Recorder::heard, this, [this] {
+        m_waking = false;
+        emit wakingChanged();
+    });
 
     m_transcriber = new Transcriber;
     m_transcriber->moveToThread(&m_worker);
@@ -117,6 +121,8 @@ QJsonObject Dictation::handle(const QString &command) {
         return {{"ok", false}, {"error", QString("unknown command: %1").arg(command)}};
 
     QJsonObject reply{{"ok", true}, {"state", m_state}, {"model", m_config.modelPath()}};
+    if (m_state == "recording")
+        reply.insert("waking", m_waking);
     if (m_modelFailed)
         reply.insert("error", m_modelError);
     return reply;
@@ -137,6 +143,8 @@ void Dictation::start() {
     for (auto &bar : m_levels)
         bar = 0.0;
     emit levelsChanged();
+    m_waking = true;
+    emit wakingChanged();
     setState("recording");
 }
 
@@ -144,6 +152,10 @@ void Dictation::stop() {
     if (!m_recorder.recording())
         return;
     const QVector<float> audio = m_recorder.stop();
+    if (m_waking) {
+        m_waking = false;
+        emit wakingChanged();
+    }
     if (!qEnvironmentVariableIsEmpty("ASMIR_DEBUG"))
         qInfo("recorded %.2f s, peak %.4f", audio.size() / double(Audio::Rate), Audio::peak(audio));
     if (audio.size() < ShortestRecording || Audio::peak(audio) < SilentPeak) {

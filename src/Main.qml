@@ -28,7 +28,7 @@ Window {
         to: 1
         duration: 1100
         loops: Animation.Infinite
-        running: dictation.state === "transcribing"
+        running: dictation.state === "transcribing" || dictation.waking
     }
 
     Rectangle {
@@ -50,13 +50,19 @@ Window {
                     required property int index
                     readonly property real live: dictation.levels[index]
                     readonly property real wave: 0.5 + 0.5 * Math.sin((overlay.phase + index / 16) * 2 * Math.PI)
+                    // While the microphone wakes up a faint glint runs along
+                    // flat bars: talking now would be lost. The bars come
+                    // alive with the first real sound.
+                    readonly property real glint: Math.max(0, 1 - Math.abs(index / dictation.levels.length - overlay.phase) * 8)
 
                     width: overlay.barWidth
-                    height: 3 + (dictation.state === "transcribing" ? wave * 9 : live * 24)
+                    height: 3 + (dictation.state === "transcribing" ? wave * 9 : dictation.waking ? glint * 3 : live * 24)
                     anchors.verticalCenter: parent.verticalCenter
                     radius: Math.min(1.5, theme.radius)
                     color: theme.accent
-                    opacity: dictation.state === "transcribing" ? 0.45 + wave * 0.4 : 0.35 + live * 0.65
+                    opacity: dictation.state === "transcribing" ? 0.45 + wave * 0.4
+                           : dictation.waking ? 0.2 + glint * 0.5
+                           : 0.35 + live * 0.65
 
                     Behavior on height {
                         enabled: dictation.state === "recording"
