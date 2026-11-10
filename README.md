@@ -137,6 +137,7 @@ Want one of these, or something else? See [CONTRIBUTING.md](CONTRIBUTING.md).
 ```sh
 bin/build     # build/app/asmir
 bin/test      # unit tests, plus a real transcription when the model is downloaded
+bin/bench     # speed and accuracy on 73 LibriSpeech clips (needs uv)
 ```
 
 - `ASMIR_DRY_RUN=1` logs the transcript instead of pasting it.

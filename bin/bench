@@ -1,0 +1,135 @@
+#!/usr/bin/env -S uv run --quiet --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pyarrow"]
+# ///
+"""Measures how fast and how accurately asmir transcribes.
+
+Runs build/app/asmir on 73 LibriSpeech clips (people reading audiobooks, 2 to
+35 seconds each, with exact transcripts) and reports, per model:
+
+  ms      median time to transcribe a clip, with the model already loaded
+  WER     word error rate: words wrong, missing or added, out of 100
+  punct   commas, full stops and question marks per 100 words; LibriSpeech's
+          transcripts have none, so compare models against each other
+
+The clips (9 MB) are downloaded into build/bench on the first run and checked
+against their SHA-256; nothing lands in the repository.
+
+  bin/bench                                   # tiny.en-q5_1 and base.en-q5_1
+  bin/bench small.en-q5_1                     # any models asmir knows
+  bin/bench tiny.en-q5_1 --prompt "Hi, ok."   # with a prompt
+  bin/bench tiny.en-q5_1 --prompt ""          # with no prompt at all
+  bin/bench --show                            # print each transcript too
+"""
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import statistics
+import subprocess
+import sys
+import tempfile
+import urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+DATA = ROOT / "build" / "bench"
+ASMIR = ROOT / "build" / "app" / "asmir"
+CLIPS_URL = ("https://huggingface.co/datasets/hf-internal-testing/librispeech_asr_dummy/resolve/"
+             "main/clean/validation-00000-of-00001.parquet")
+CLIPS_SHA256 = "4e69a06fa5edc90921e5e7e39a7084881f8b3ed9c805c574f4f39c6fde27c603"
+
+
+def fetch_clips():
+    references = DATA / "references.json"
+    if references.exists():
+        return json.loads(references.read_text())
+    DATA.mkdir(parents=True, exist_ok=True)
+    parquet = DATA / "clips.parquet"
+    if not parquet.exists():
+        print("Downloading the LibriSpeech clips (9 MB)...", file=sys.stderr)
+        partial = parquet.with_suffix(".part")
+        urllib.request.urlretrieve(CLIPS_URL, partial)
+        if hashlib.sha256(partial.read_bytes()).hexdigest() != CLIPS_SHA256:
+            partial.unlink()
+            sys.exit("The download doesn't match its checksum, so it wasn't kept.")
+        partial.rename(parquet)
+
+    import pyarrow.parquet
+
+    table = pyarrow.parquet.read_table(parquet).to_pylist()
+    clips = {}
+    for row in table:
+        name = f"{row['id']}.flac"
+        (DATA / name).write_bytes(row["audio"]["bytes"])
+        clips[name] = row["text"]
+    references.write_text(json.dumps(clips, indent=1))
+    return clips
+
+
+def words(text):
+    return re.sub(r"[^a-z0-9' ]", " ", text.lower().replace("-", " ")).split()
+
+
+def errors(reference, hypothesis):
+    """Word-level edit distance."""
+    previous = list(range(len(hypothesis) + 1))
+    for i, ref in enumerate(reference, 1):
+        current = [i]
+        for j, hyp in enumerate(hypothesis, 1):
+            current.append(min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + (ref != hyp)))
+        previous = current
+    return previous[-1]
+
+
+def run(model, prompt, clips, show):
+    with tempfile.TemporaryDirectory() as config_home:
+        config = Path(config_home) / "asmir" / "config"
+        config.parent.mkdir()
+        lines = [f"model = {model}"]
+        if prompt is not None:
+            lines.append(f'prompt = "{prompt}"' if prompt else "prompt =")
+        config.write_text("\n".join(lines) + "\n")
+        env = dict(os.environ, XDG_CONFIG_HOME=config_home)
+
+        times, wrong, total, marks, said = [], 0, 0, 0, 0
+        for name, reference in clips.items():
+            result = subprocess.run([ASMIR, "transcribe", DATA / name, "--json"], env=env,
+                                    capture_output=True, text=True)
+            if result.returncode != 0:
+                sys.exit(f"asmir couldn't transcribe {name} with {model}: {result.stderr.strip()}")
+            output = json.loads(result.stdout)
+            text = output["text"]
+            times.append(output["decode_ms"])
+            ref_words, hyp_words = words(reference), words(text)
+            wrong += errors(ref_words, hyp_words)
+            total += len(ref_words)
+            marks += len(re.findall(r"[,.?!;:]", text))
+            said += len(hyp_words)
+            if show:
+                print(f"  {name}: {text}")
+    return statistics.median(times), 100 * wrong / total, 100 * marks / max(1, said)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Measure asmir's speed and accuracy.")
+    parser.add_argument("models", nargs="*", default=["tiny.en-q5_1", "base.en-q5_1"])
+    parser.add_argument("--prompt", help="the prompt to use (default: asmir's own)")
+    parser.add_argument("--show", action="store_true", help="print each transcript")
+    args = parser.parse_args()
+
+    if not ASMIR.exists():
+        sys.exit("Build asmir first: bin/build")
+    clips = fetch_clips()
+    print(f"{len(clips)} clips, {os.cpu_count()} CPU threads")
+    print(f"{'model':<16} {'ms':>6} {'WER':>6} {'punct':>6}")
+    for model in args.models:
+        ms, wer, punct = run(model, args.prompt, clips, args.show)
+        print(f"{model:<16} {ms:>6.0f} {wer:>5.1f}% {punct:>6.1f}", flush=True)
+
+
+if __name__ == "__main__":
+    main()

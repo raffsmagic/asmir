@@ -8,8 +8,9 @@ fast, private and good-looking. Everything below protects that.
 - **Bug fixes.** Something misheard, mis-pasted, crashed, or looked off.
   Include what you did, what happened, and your Omarchy version and hardware.
 - **Speed.** Faster first words, faster text, less memory. Bring before and
-  after numbers from your machine.
-- **Accuracy.** Better defaults, prompts, or model handling, with examples.
+  after numbers from your machine (`bin/bench` measures them).
+- **Accuracy.** Better defaults, prompts, or model handling, with `bin/bench`
+  numbers showing the word error rate doesn't get worse.
 - **Omarchy integration.** Keeping up with Omarchy as it changes: themes,
   languages, dictation plumbing, new hardware.
 - **Translations.** Messages live in `src/i18n/`, one file per Omarchy
