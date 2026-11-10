@@ -90,7 +90,8 @@ threads = 0               # 0 = half your CPU threads, up to 8
 trailing_space = true     # back-to-back dictations don't run together
 ```
 
-Run `asmir quit` after editing; the next dictation starts it fresh.
+Changes apply from the next dictation, including a model you've just
+downloaded with `asmir model download`.
 
 ## Commands
 

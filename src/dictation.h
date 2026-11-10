@@ -3,6 +3,7 @@
 #include "config.h"
 #include "recorder.h"
 
+#include <QFileSystemWatcher>
 #include <QJsonObject>
 #include <QObject>
 #include <QThread>
@@ -68,6 +69,9 @@ private:
     void transcriptionFailed(quint64 id, const QString &error);
     void paste(const QString &text);
     void updateIdleState();
+    void loadModel();
+    void watch();
+    void reloadConfig();
 
     Config m_config;
     Recorder m_recorder;
@@ -79,6 +83,11 @@ private:
     QString m_message;
     QTimer m_messageTimer;
     QTimer m_limitTimer;
+    QTimer m_reloadTimer;
+    QFileSystemWatcher m_watcher;
+    QString m_requestedModel;
+    int m_requestedThreads = 0;
+    int m_loading = 0;
     quint64 m_nextId = 1;
     int m_pending = 0;
     bool m_modelFailed = false;

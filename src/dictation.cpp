@@ -5,6 +5,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QLocalServer>
 #include <QLocalSocket>
@@ -36,6 +37,14 @@ Dictation::Dictation(QObject *parent) : QObject(parent), m_config(Config::load()
         updateIdleState();
     });
 
+    // Editors save in bursts (a temporary file, a rename, a write), so wait
+    // for the dust to settle before reading the config again.
+    m_reloadTimer.setSingleShot(true);
+    m_reloadTimer.setInterval(200);
+    connect(&m_reloadTimer, &QTimer::timeout, this, &Dictation::reloadConfig);
+    connect(&m_watcher, &QFileSystemWatcher::fileChanged, &m_reloadTimer, qOverload<>(&QTimer::start));
+    connect(&m_watcher, &QFileSystemWatcher::directoryChanged, &m_reloadTimer, qOverload<>(&QTimer::start));
+
     m_limitTimer.setSingleShot(true);
     m_limitTimer.setInterval(LongestRecordingMs);
     connect(&m_limitTimer, &QTimer::timeout, this, &Dictation::stop);
@@ -52,6 +61,9 @@ Dictation::Dictation(QObject *parent) : QObject(parent), m_config(Config::load()
     connect(this, &Dictation::requestLoad, m_transcriber, &Transcriber::load);
     connect(this, &Dictation::requestTranscription, m_transcriber, &Transcriber::transcribe);
     connect(m_transcriber, &Transcriber::loaded, this, [this](bool ok, const QString &error) {
+        // A later config change already asked for another model.
+        if (--m_loading > 0)
+            return;
         m_modelFailed = !ok;
         m_modelError = error;
         if (!ok)
@@ -111,8 +123,43 @@ bool Dictation::listen(QString *error) {
         }
     });
 
-    emit requestLoad(m_config.modelPath(), m_config.threadCount());
+    loadModel();
+    watch();
     return true;
+}
+
+void Dictation::loadModel() {
+    m_requestedModel = m_config.modelPath();
+    m_requestedThreads = m_config.threadCount();
+    ++m_loading;
+    emit requestLoad(m_requestedModel, m_requestedThreads);
+}
+
+void Dictation::watch() {
+    // The config file may not exist yet, and editors and downloads replace
+    // files rather than change them, which drops them from the watcher: watch
+    // both folders, and the file whenever it's there.
+    const QString config = Config::path();
+    const QStringList folders{QFileInfo(config).absolutePath(), Config::modelsDirectory()};
+    for (const QString &folder : folders) {
+        QDir().mkpath(folder);
+        if (!m_watcher.directories().contains(folder))
+            m_watcher.addPath(folder);
+    }
+    if (QFileInfo::exists(config) && !m_watcher.files().contains(config))
+        m_watcher.addPath(config);
+}
+
+void Dictation::reloadConfig() {
+    watch();
+    m_config = Config::load();
+    // Language, prompt and spacing apply to the next dictation as they are.
+    // A new model or thread count needs loading; so does a model that was
+    // missing and has just been downloaded.
+    const bool changed = m_config.modelPath() != m_requestedModel || m_config.threadCount() != m_requestedThreads;
+    const bool arrived = m_modelFailed && QFileInfo::exists(m_config.modelPath());
+    if (changed || arrived)
+        loadModel();
 }
 
 QJsonObject Dictation::handle(const QString &command) {
