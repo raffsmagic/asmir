@@ -23,6 +23,16 @@ float level(const float *samples, qsizetype count);
 // The loudest sample, from 0 to 1.
 float peak(const QVector<float> &samples);
 
+// Where the speech in a recording starts and ends, as sample positions, with
+// a little margin either side. Empty when nothing louder than the room lasts
+// long enough to be a word: a muted mic, a cough, a key click.
+struct Span {
+    qsizetype from = 0;
+    qsizetype to = 0;
+    bool isEmpty() const { return to <= from; }
+};
+Span speech(const QVector<float> &samples);
+
 // True when a transcript has far more words than seconds of speech allow,
 // the sign of whisper repeating itself.
 bool looksRunaway(const QString &text, int seconds);

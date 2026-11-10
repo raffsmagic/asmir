@@ -37,6 +37,49 @@ float peak(const QVector<float> &samples) {
     return loudest;
 }
 
+Span speech(const QVector<float> &samples) {
+    // Loudness in 20 ms frames.
+    constexpr qsizetype Frame = Rate / 50;
+    const qsizetype frames = samples.size() / Frame;
+    if (frames == 0)
+        return {};
+    QVector<float> loudness(frames);
+    for (qsizetype f = 0; f < frames; ++f) {
+        double squares = 0.0;
+        for (qsizetype i = f * Frame; i < (f + 1) * Frame; ++i)
+            squares += double(samples[i]) * samples[i];
+        loudness[f] = float(std::sqrt(squares / Frame));
+    }
+
+    // The room's own level is what the quietest tenth of the recording
+    // reaches, and speech is clearly above it (10 dB). Between -54 dB, which
+    // even a quiet voice clears, and -40 dB, which is always a voice: a
+    // recording with no pause in it would otherwise measure its "room" from
+    // the speech and throw all of it away.
+    QVector<float> sorted = loudness;
+    std::nth_element(sorted.begin(), sorted.begin() + frames / 10, sorted.end());
+    const float threshold = std::clamp(sorted[frames / 10] * 3.2f, 0.002f, 0.01f);
+
+    qsizetype first = -1, last = -1, voiced = 0;
+    for (qsizetype f = 0; f < frames; ++f) {
+        if (loudness[f] < threshold)
+            continue;
+        if (first < 0)
+            first = f;
+        last = f;
+        ++voiced;
+    }
+    // The shortest word is about a tenth of a second of sound; a click or a
+    // bump of the desk is a frame or two.
+    if (voiced < 5)
+        return {};
+
+    // whisper hears the start and end of words better with some quiet around
+    // them.
+    constexpr qsizetype Margin = Rate * 4 / 10;
+    return {std::max<qsizetype>(0, first * Frame - Margin), std::min(samples.size(), (last + 1) * Frame + Margin)};
+}
+
 bool looksRunaway(const QString &text, int seconds) {
     const qsizetype words = text.split(QRegularExpression(R"(\s+)"), Qt::SkipEmptyParts).size();
     return words > 5 * qMax(1, seconds) + 8;

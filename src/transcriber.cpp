@@ -61,9 +61,16 @@ QString Transcriber::transcribeNow(const QVector<float> &audio, const QString &l
         return {};
     }
 
+    // Only the speech goes to whisper. Quiet before the first word and after
+    // the last costs time, and with nothing to hear the small models make
+    // words up ("the other." from a key click and room noise).
+    const Audio::Span speech = Audio::speech(audio);
+    if (speech.isEmpty())
+        return {};
+    QVector<float> samples = audio.mid(speech.from, speech.to - speech.from);
+
     // whisper.cpp warns about, and guesses badly on, input under a second, so
     // pad a short recording with silence.
-    QVector<float> samples = audio;
     const int minimum = Audio::Rate + Audio::Rate / 10;
     if (samples.size() < minimum)
         samples.resize(minimum, 0.0f);

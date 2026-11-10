@@ -44,6 +44,23 @@ QVector<float> readPcmWav(const QString &path) {
     return samples;
 }
 
+// Faint, steady room noise, the same every run.
+QVector<float> roomNoise(qsizetype count) {
+    QVector<float> samples(count);
+    quint32 state = 1;
+    for (float &sample : samples) {
+        state = state * 1103515245u + 12345u;
+        sample = (int((state >> 16) % 2000) - 1000) / 1000.0f * 0.004f;
+    }
+    return samples;
+}
+
+// A key click: a few milliseconds of something loud.
+void addClick(QVector<float> &samples, qsizetype at) {
+    for (qsizetype i = at; i < at + 200 && i < samples.size(); ++i)
+        samples[i] = i % 2 ? 0.3f : -0.3f;
+}
+
 }
 
 class AsmirTests : public QObject {
@@ -84,6 +101,37 @@ private slots:
         QVERIFY(!Audio::looksRunaway("And so my fellow Americans ask not what your country can do for you.", 4));
         QVERIFY(!Audio::looksRunaway("Yes.", 0));
         QVERIFY(Audio::looksRunaway(QString("the the the ").repeated(20), 3));
+    }
+
+    void speechIsFoundBetweenTheQuiet() {
+        // Two seconds of room, a second of voice, two more of room.
+        QVector<float> samples = roomNoise(5 * Audio::Rate);
+        for (qsizetype i = 2 * Audio::Rate; i < 3 * Audio::Rate; ++i)
+            samples[i] += 0.1f * std::sin(i * 0.05f);
+        const Audio::Span span = Audio::speech(samples);
+        QVERIFY(!span.isEmpty());
+        // The voice and its margin, and none of the rest.
+        QVERIFY(span.from <= 2 * Audio::Rate - Audio::Rate / 4);
+        QVERIFY(span.from >= Audio::Rate);
+        QVERIFY(span.to >= 3 * Audio::Rate + Audio::Rate / 4);
+        QVERIFY(span.to <= 4 * Audio::Rate);
+
+        // Speech from the very first sample keeps the start.
+        QVector<float> talking(Audio::Rate);
+        for (qsizetype i = 0; i < talking.size(); ++i)
+            talking[i] = 0.1f * std::sin(i * 0.05f);
+        QCOMPARE(Audio::speech(talking).from, qsizetype(0));
+        QCOMPARE(Audio::speech(talking).to, talking.size());
+    }
+
+    void quietAndClicksAreNotSpeech() {
+        QVERIFY(Audio::speech({}).isEmpty());
+        QVERIFY(Audio::speech(QVector<float>(3 * Audio::Rate, 0.0f)).isEmpty());
+        QVector<float> room = roomNoise(3 * Audio::Rate);
+        QVERIFY(Audio::speech(room).isEmpty());
+        addClick(room, Audio::Rate / 2);
+        addClick(room, 2 * Audio::Rate);
+        QVERIFY(Audio::speech(room).isEmpty());
     }
 
     void transcriptLosesNonSpeechTags() {
@@ -245,6 +293,20 @@ private slots:
         const QString text = transcriber.transcribeNow(audio, "en", {}, &error).toLower();
         QVERIFY2(error.isEmpty(), qPrintable(error));
         QVERIFY2(text.contains("not what your country can do for you"), qPrintable(text));
+
+        // With quiet before and room noise after, whisper still gets it all.
+        QVector<float> padded(3 * Audio::Rate, 0.0f);
+        padded += audio;
+        padded += roomNoise(4 * Audio::Rate);
+        const QString paddedText = transcriber.transcribeNow(padded, "en", {}, &error).toLower();
+        QVERIFY2(paddedText.contains("ask not what your country can do for you"), qPrintable(paddedText));
+        QVERIFY2(paddedText.contains("what you can do for your country"), qPrintable(paddedText));
+
+        // Room noise and a key click are nothing, not made-up words.
+        QVector<float> nothing = roomNoise(8 * Audio::Rate);
+        addClick(nothing, Audio::Rate / 2);
+        QCOMPARE(transcriber.transcribeNow(nothing, "en", {}, &error), QString());
+        QVERIFY2(error.isEmpty(), qPrintable(error));
     }
 };
 
