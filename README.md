@@ -20,7 +20,7 @@ it runs on whisper.cpp. We couldn't help ourselves.*
 
 ```sh
 git clone https://github.com/raffsmagic/asmir
-cd asmir/pkgbuild && makepkg -si   # builds the 0.1.0 release into a real package
+cd asmir/pkgbuild && makepkg -si   # builds the latest release into a real package
 asmir setup                        # fetch the model and plug asmir into Omarchy's dictation
 ```
 
