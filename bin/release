@@ -1,0 +1,72 @@
+#!/bin/sh
+# Releases asmir: bumps the version, tags and publishes it on GitHub with the
+# notes you wrote, fills in the tarball checksum, builds the package from that
+# tarball (tests included), and readies the AUR update. See docs/releasing.md.
+#
+#   bin/release 0.2.0 notes.md
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+AUR="$ROOT/../asmir-aur"
+VERSION="${1:-}"
+NOTES="${2:-}"
+
+fail() { echo "$*" >&2; exit 1; }
+
+echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || fail "Usage: bin/release <version, like 0.2.0> <notes.md>"
+[ -f "$NOTES" ] || fail "Write the release notes first: bin/release $VERSION notes.md"
+NOTES="$(CDPATH= cd -- "$(dirname -- "$NOTES")" && pwd)/$(basename -- "$NOTES")"
+
+cd "$ROOT"
+[ "$(git branch --show-current)" = main ] || fail "Release from main."
+[ -z "$(git status --porcelain --untracked-files=no)" ] || fail "Commit or stash your changes first."
+git fetch -q origin main
+[ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ] || fail "main and origin/main differ; push or pull first."
+git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null && fail "v$VERSION is already tagged."
+
+echo "Testing..."
+bin/test >/dev/null || fail "The tests fail; run bin/test to see why."
+
+sed -i "s/^const char \*Version = \".*\";/const char *Version = \"$VERSION\";/" src/main.cpp
+sed -i "s/^pkgver=.*/pkgver=$VERSION/; s/^pkgrel=.*/pkgrel=1/" pkgbuild/PKGBUILD
+git diff --quiet src/main.cpp && fail "Couldn't find the version in src/main.cpp."
+
+printf 'Release %s to GitHub? [y/N] ' "$VERSION"
+read -r answer
+if [ "$answer" != y ] && [ "$answer" != Y ]; then
+  git checkout -q src/main.cpp pkgbuild/PKGBUILD
+  fail "Nothing released."
+fi
+
+git commit -q -m "Release $VERSION" src/main.cpp pkgbuild/PKGBUILD
+git tag "v$VERSION"
+git push -q origin main "v$VERSION"
+gh release create "v$VERSION" --title "asmir $VERSION" --notes-file "$NOTES"
+
+# The checksum of the tarball GitHub just made for the tag.
+cd "$ROOT/pkgbuild"
+updpkgsums >/dev/null 2>&1
+cd "$ROOT"
+git commit -q -m "Check the $VERSION tarball" pkgbuild/PKGBUILD
+git push -q origin main
+
+echo "Building the package from the release tarball..."
+cd "$ROOT/pkgbuild"
+LOG="$ROOT/build/makepkg-$VERSION.log"
+makepkg -f >"$LOG" 2>&1 || fail "The package didn't build; see $LOG."
+PACKAGE="$ROOT/pkgbuild/asmir-$VERSION-1-x86_64.pkg.tar.zst"
+
+if [ -d "$AUR/.git" ]; then
+  cp "$ROOT/pkgbuild/PKGBUILD" "$AUR/PKGBUILD"
+  cd "$AUR"
+  makepkg --printsrcinfo >.SRCINFO
+  git commit -q -am "Update to $VERSION"
+  AUR_NOTE="Committed \"Update to $VERSION\" in $AUR; publish it there with: git push"
+else
+  AUR_NOTE="No AUR checkout at $AUR, so the AUR wasn't touched."
+fi
+
+echo
+echo "Released asmir $VERSION."
+echo "Install it here: sudo pacman -U $PACKAGE && asmir quit"
+echo "$AUR_NOTE"

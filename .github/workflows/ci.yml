@@ -9,6 +9,9 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container: archlinux:latest
+    env:
+      # Where asmir looks for its models.
+      XDG_DATA_HOME: /tmp/asmir-data
     steps:
       - name: Install build dependencies
         run: |
@@ -21,7 +24,19 @@ jobs:
       - name: Build
         run: bin/build
 
+      # The default model (32 MB) makes the real-transcription test run too.
+      - name: Cache the speech model
+        uses: actions/cache@v4
+        with:
+          path: /tmp/asmir-data/asmir/models
+          key: model-tiny.en-q5_1-c77c5766
+
+      - name: Download the speech model
+        run: |
+          [ -f /tmp/asmir-data/asmir/models/ggml-tiny.en-q5_1.bin ] || build/app/asmir model download tiny.en-q5_1
+
       - name: Test
-        # The model isn't downloaded here, so the real-transcription test is
-        # skipped; everything else runs.
-        run: bin/test
+        run: |
+          bin/test
+          bin/test transcribesTheSample | grep -q '^PASS.*transcribesTheSample'
+
