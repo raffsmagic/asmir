@@ -27,7 +27,7 @@
 
 namespace {
 
-const char *Version = "0.1.2";
+const char *Version = "0.1.3";
 
 const char *Usage = R"(asmir — push-to-talk dictation with whisper.cpp
 

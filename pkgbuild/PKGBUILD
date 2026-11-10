@@ -2,7 +2,7 @@
 # out, so whisper.cpp comes as its own pinned tarball. On a new release, bump
 # pkgver and fill in the asmir checksum with `updpkgsums`.
 pkgname=asmir
-pkgver=0.1.2
+pkgver=0.1.3
 pkgrel=1
 _whisper=1.9.5
 pkgdesc="Push-to-talk dictation for Omarchy with whisper.cpp and a small waveform overlay"
