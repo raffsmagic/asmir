@@ -1,5 +1,6 @@
 #include "audio.h"
 #include "config.h"
+#include "dictation.h"
 #include "models.h"
 #include "setup.h"
 #include "theme.h"
@@ -271,6 +272,17 @@ private slots:
         QCOMPARE(translator.language(), QString("de"));
         QCOMPARE(translator.translate("Transcriber", "Speech recognition failed."),
                  QString("Die Spracherkennung ist fehlgeschlagen."));
+    }
+
+    void daemonAnswersEveryCommand() {
+        Dictation dictation;
+        // Nothing is recording, so cancel and stop leave it idle.
+        for (const QString command : {"cancel", "stop", "status"}) {
+            const QJsonObject reply = dictation.handle(command);
+            QVERIFY2(reply.value("ok").toBool(), qPrintable(command));
+            QCOMPARE(reply.value("state").toString(), QString("idle"));
+        }
+        QVERIFY(!dictation.handle("dance").value("ok").toBool());
     }
 
     void missingModelSaysHowToGetIt() {

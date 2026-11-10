@@ -34,6 +34,7 @@ const char *Usage = R"(asmir — push-to-talk dictation with whisper.cpp
 Usage:
   asmir setup                    Make asmir Omarchy's dictation backend
   asmir start | stop | toggle    Record, then paste what was said (starts the daemon)
+  asmir cancel                   Stop recording without pasting anything
   asmir status [--json]          Whether it's idle, recording, or transcribing
   asmir quit                     Stop the daemon
   asmir serve                    Run the daemon in the foreground
@@ -218,7 +219,8 @@ int main(int argc, char *argv[]) {
     QStringList args = app.arguments().mid(2);
     const bool json = args.removeAll("--json") > 0;
 
-    if (command == "start" || command == "stop" || command == "toggle" || command == "status" || command == "quit")
+    if (command == "start" || command == "stop" || command == "toggle" || command == "cancel" || command == "status"
+        || command == "quit")
         return control(command, json);
     if (command == "model")
         return model(args);

@@ -49,6 +49,8 @@ public slots:
     void start();
     void stop();
     void toggle();
+    // Stops recording and throws the audio away.
+    void cancel();
 
 signals:
     void stateChanged();
@@ -76,6 +78,7 @@ private:
     QVariantList m_levels;
     QString m_message;
     QTimer m_messageTimer;
+    QTimer m_limitTimer;
     quint64 m_nextId = 1;
     int m_pending = 0;
     bool m_modelFailed = false;

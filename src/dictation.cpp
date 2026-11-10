@@ -18,6 +18,9 @@ namespace {
 constexpr qsizetype ShortestRecording = Audio::Rate / 4;
 // Below this the microphone heard nothing at all (muted or unplugged).
 constexpr float SilentPeak = 0.002f;
+// A recording left running (Alt + Space pressed and forgotten) stops itself
+// and pastes, rather than listening and filling memory all day.
+constexpr int LongestRecordingMs = 5 * 60 * 1000;
 
 }
 
@@ -32,6 +35,10 @@ Dictation::Dictation(QObject *parent) : QObject(parent), m_config(Config::load()
         emit messageChanged();
         updateIdleState();
     });
+
+    m_limitTimer.setSingleShot(true);
+    m_limitTimer.setInterval(LongestRecordingMs);
+    connect(&m_limitTimer, &QTimer::timeout, this, &Dictation::stop);
 
     connect(&m_recorder, &Recorder::level, this, &Dictation::pushLevel);
     connect(&m_recorder, &Recorder::heard, this, [this] {
@@ -115,6 +122,8 @@ QJsonObject Dictation::handle(const QString &command) {
         stop();
     else if (command == "toggle")
         toggle();
+    else if (command == "cancel")
+        cancel();
     else if (command == "quit")
         QMetaObject::invokeMethod(qApp, &QCoreApplication::quit, Qt::QueuedConnection);
     else if (command != "status")
@@ -145,12 +154,14 @@ void Dictation::start() {
     emit levelsChanged();
     m_waking = true;
     emit wakingChanged();
+    m_limitTimer.start();
     setState("recording");
 }
 
 void Dictation::stop() {
     if (!m_recorder.recording())
         return;
+    m_limitTimer.stop();
     const QVector<float> audio = m_recorder.stop();
     if (m_waking) {
         m_waking = false;
@@ -165,6 +176,18 @@ void Dictation::stop() {
     ++m_pending;
     setState("transcribing");
     emit requestTranscription(m_nextId++, audio, m_config.language, m_config.prompt);
+}
+
+void Dictation::cancel() {
+    if (!m_recorder.recording())
+        return;
+    m_limitTimer.stop();
+    m_recorder.stop();
+    if (m_waking) {
+        m_waking = false;
+        emit wakingChanged();
+    }
+    updateIdleState();
 }
 
 void Dictation::toggle() {

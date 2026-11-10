@@ -37,6 +37,9 @@ reloads Hyprland. Then:
 | Hold **Right Alt** | Talk while held, paste when you let go |
 | **Alt + Space** | Start, then press again to stop and paste |
 
+A recording you forget about stops and pastes on its own after five minutes.
+To back out of one without pasting, bind a key to `asmir cancel`.
+
 Changed your mind? Pick another backend under Setup > Defaults > Dictation.
 No hard feelings.
 
@@ -95,6 +98,7 @@ Run `asmir quit` after editing; the next dictation starts it fresh.
 | --- | --- |
 | `asmir setup` | Make asmir Omarchy's dictation backend |
 | `asmir start` / `stop` / `toggle` | Record, then paste what was said |
+| `asmir cancel` | Stop recording and paste nothing |
 | `asmir status [--json]` | `idle`, `recording`, `transcribing`, or `stopped` |
 | `asmir quit` | Stop the daemon |
 | `asmir serve` | Run the daemon in the foreground |
